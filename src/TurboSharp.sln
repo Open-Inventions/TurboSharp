@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboSharp", "TurboSharp\TurboSharp.csproj", "{401EAA59-E213-4566-A970-1CACB7694BFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboSharp.Roslyn", "TurboSharp.Roslyn\TurboSharp.Roslyn.csproj", "{83A4C284-AA82-48B5-AA1A-41D0BA93098B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{401EAA59-E213-4566-A970-1CACB7694BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{401EAA59-E213-4566-A970-1CACB7694BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{401EAA59-E213-4566-A970-1CACB7694BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{401EAA59-E213-4566-A970-1CACB7694BFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83A4C284-AA82-48B5-AA1A-41D0BA93098B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83A4C284-AA82-48B5-AA1A-41D0BA93098B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83A4C284-AA82-48B5-AA1A-41D0BA93098B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83A4C284-AA82-48B5-AA1A-41D0BA93098B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
