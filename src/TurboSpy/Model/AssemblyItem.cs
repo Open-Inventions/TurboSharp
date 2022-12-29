@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TurboSpy.Core;
 
 namespace TurboSpy.Model
@@ -11,12 +12,20 @@ namespace TurboSpy.Model
             One = one;
         }
 
+        public override bool CanExpand => true;
+
+        public override IEnumerable<SpyItem> GetChildren()
+        {
+            var file = One.Decompiler.TypeSystem.MainModule.PEFile;
+            yield return new ReferencesItem(One.ReferencedModules, file);
+        }
+
         protected override string Text
         {
             get
             {
                 var name = One.FullAssemblyName;
-                return $" {name.Name} ({name.Version})";
+                return $"{name.Name} ({name.Version})";
             }
         }
     }

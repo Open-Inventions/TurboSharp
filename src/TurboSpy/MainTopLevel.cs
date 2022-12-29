@@ -5,7 +5,6 @@ using Terminal.Gui;
 using TurboSharp.Common;
 using TurboSpy.Core;
 using TurboSpy.Model;
-using System;
 using System.Linq;
 using Terminal.Gui.Trees;
 
@@ -79,18 +78,8 @@ namespace TurboSpy
             return (treeView, textView, winL, winR);
         }
 
-        private bool CanExpand(SpyItem arg)
-        {
-            if (arg is AssemblyItem)
-                return true;
-
-            throw new NotImplementedException(arg.ToString());
-        }
-
-        private IEnumerable<SpyItem> GetChild(SpyItem arg)
-        {
-            throw new NotImplementedException();
-        }
+        private bool CanExpand(SpyItem arg) => arg.CanExpand;
+        private IEnumerable<SpyItem> GetChild(SpyItem arg) => arg.GetChildren();
 
         private void OnTreeSelect(object sender, SelectionChangedEventArgs<SpyItem> e)
         {
@@ -99,6 +88,19 @@ namespace TurboSpy
             {
                 var moduleMeta = ai.One.GetModuleTxt();
                 _textView.Text = moduleMeta;
+                return;
+            }
+            if (selected is ReferencesItem ri)
+            {
+                var refsMeta = ri.GetListTxt();
+                _textView.Text = refsMeta;
+                return;
+            }
+            if (selected is ReferenceItem fi)
+            {
+                var refMeta = fi.GetListTxt();
+                _textView.Text = refMeta;
+                return;
             }
         }
 
