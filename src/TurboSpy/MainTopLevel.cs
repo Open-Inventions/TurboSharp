@@ -5,6 +5,8 @@ using Terminal.Gui;
 using TurboSharp.Common;
 using TurboSpy.Core;
 using TurboSpy.Model;
+using System;
+using Terminal.Gui.Trees;
 
 namespace TurboSpy
 {
@@ -13,6 +15,8 @@ namespace TurboSpy
         private readonly Env _boot;
         private readonly IDictionary<string, OneFile> _files;
         private readonly Decompiler _parent;
+        private readonly TreeView<SpyItem> _treeView;
+        private readonly TextView _textView;
 
         public MainTopLevel(Env boot)
         {
@@ -21,7 +25,76 @@ namespace TurboSpy
             _parent = new Decompiler();
             ColorScheme = Visuals.GetBaseColor();
             MenuBar = CreateMenuBar();
+            var blue = Visuals.CreateTextColor();
+            var (tree, text, winL, winR) = CreateTree(blue, blue);
+            _treeView = tree;
+            _textView = text;
+            var status = CreateStatus();
             Add(MenuBar);
+            Add(winL);
+            Add(winR);
+            Add(status);
+
+        }
+
+        private StatusBar CreateStatus()
+        {
+            var statusBar = new StatusBar(new StatusItem[0]);
+            return statusBar;
+        }
+
+        private (TreeView<SpyItem>, TextView, Window, Window) CreateTree(ColorScheme wColor, ColorScheme tColor)
+        {
+            var winL = new Window("Assemblies")
+            {
+                X = 0, Y = 1,
+                Width = Dim.Percent(35), Height = Dim.Fill(),
+                ColorScheme = wColor
+            };
+            var treeView = new TreeView<SpyItem>
+            {
+                Width = Dim.Fill(), Height = Dim.Fill(),
+                ColorScheme = tColor
+            };
+            treeView.TreeBuilder = new DelegateTreeBuilder<SpyItem>(GetChild, CanExpand);
+            treeView.SelectionChanged += OnTreeSelect;
+            winL.Add(treeView);
+
+            var winR = new Window("Decompiled")
+            {
+                X = Pos.Right(winL), Y = 1,
+                Width = Dim.Percent(65), Height = Dim.Fill(),
+                ColorScheme = wColor
+            };
+            var textView = new TextView
+            {
+                Width = Dim.Fill(), Height = Dim.Fill(),
+                BottomOffset = 1, RightOffset = 1,
+                ColorScheme = tColor
+            };
+            textView.ClearKeybinding(Key.AltMask | Key.F);
+            winR.Add(textView);
+
+            return (treeView, textView, winL, winR);
+        }
+
+        private bool CanExpand(SpyItem arg)
+        {
+            if (arg is AssemblyItem)
+                return true;
+
+            throw new NotImplementedException(arg.ToString());
+        }
+
+        private IEnumerable<SpyItem> GetChild(SpyItem arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnTreeSelect(object sender, SelectionChangedEventArgs<SpyItem> e)
+        {
+            var debug = sender + " / " + e.NewValue + " / " + e.OldValue + " / " + _textView;
+            _textView.Text = debug;
         }
 
         private MenuBar CreateMenuBar()
@@ -36,11 +109,20 @@ namespace TurboSpy
                     new MenuItem("E_xit", null, DoExit,
                         null, null, Key.AltMask | Key.X)
                 }),
+                new MenuBarItem("_View", new[]
+                {
+                    new MenuItem("_Collapse all nodes", null, DoCollapse)
+                }),
                 new MenuBarItem("_Help", new[]
                 {
                     new MenuItem("_About...", null, DoAbout)
                 })
             });
+        }
+
+        private void DoCollapse()
+        {
+            _treeView.CollapseAll();
         }
 
         private void DoOpen()
@@ -64,7 +146,17 @@ namespace TurboSpy
             var currentFile = Path.GetFullPath(rawFile);
             if (!Inputs.IsValidFile(currentFile))
                 return;
-            _files[currentFile] = LoadFile(currentFile);
+            var one = LoadFile(currentFile);
+            _files[currentFile] = one;
+            RefreshTree(one);
+        }
+
+        private void RefreshTree(OneFile one)
+        {
+            var wrap = new AssemblyItem(one);
+            _treeView.AddObject(wrap);
+            _treeView.SetNeedsDisplay();
+            _treeView.SetFocus();
         }
 
         private OneFile LoadFile(string fileName)
