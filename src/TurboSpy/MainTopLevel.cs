@@ -1,17 +1,24 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Terminal.Gui;
 using TurboSharp.Common;
+using TurboSpy.Core;
+using TurboSpy.Model;
 
 namespace TurboSpy
 {
     internal sealed class MainTopLevel : Toplevel
     {
         private readonly Env _boot;
+        private readonly IDictionary<string, OneFile> _files;
+        private readonly Decompiler _parent;
 
         public MainTopLevel(Env boot)
         {
             _boot = boot;
+            _files = new SortedDictionary<string, OneFile>();
+            _parent = new Decompiler();
             ColorScheme = Visuals.GetBaseColor();
             MenuBar = CreateMenuBar();
             Add(MenuBar);
@@ -52,9 +59,19 @@ namespace TurboSpy
             AddFile(currentFile);
         }
 
-        private void AddFile(string currentFile)
+        private void AddFile(string rawFile)
         {
-            throw new System.NotImplementedException(currentFile);
+            var currentFile = Path.GetFullPath(rawFile);
+            if (!Inputs.IsValidFile(currentFile))
+                return;
+            _files[currentFile] = LoadFile(currentFile);
+        }
+
+        private OneFile LoadFile(string fileName)
+        {
+            var decompiler = _parent.GetDecompiler(fileName);
+            var one = new OneFile(decompiler);
+            return one;
         }
 
         private void DoExit()
