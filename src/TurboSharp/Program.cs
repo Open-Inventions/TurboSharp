@@ -1,5 +1,6 @@
 ﻿using System;
 using Terminal.Gui;
+using TurboSharp.Common;
 
 namespace TurboSharp
 {
@@ -7,11 +8,14 @@ namespace TurboSharp
     {
         private static void Main(string[] args)
         {
-            Env.Root = Environment.CurrentDirectory;
-            Env.Args = args;
+            var boot = new Env
+            {
+                Root = Environment.CurrentDirectory,
+                Args = args
+            };
 
             Application.Init();
-            Application.Run<MainTopLevel>();
+            Application.Run(new MainTopLevel(boot));
             Application.Shutdown();
         }
     }

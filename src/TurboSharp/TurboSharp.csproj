@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Terminal.Gui" Version="1.8.2" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\TurboSharp.Common\TurboSharp.Common.csproj" />
     <ProjectReference Include="..\TurboSharp.Roslyn\TurboSharp.Roslyn.csproj" />
   </ItemGroup>
 

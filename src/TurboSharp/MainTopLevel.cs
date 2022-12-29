@@ -3,36 +3,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Terminal.Gui;
+using TurboSharp.Common;
 using TurboSharp.Roslyn;
 
 namespace TurboSharp
 {
     internal sealed class MainTopLevel : Toplevel
     {
+        private readonly Env _boot;
+
         private const string EmptyFile = "Untitled";
         private readonly TextView _textView;
         private string _currentFileName;
 
-        public MainTopLevel()
+        public MainTopLevel(Env boot)
         {
-            var baseColor = Colors.ColorSchemes[nameof(Colors.Base)];
-            ColorScheme = baseColor;
+            _boot = boot;
+            ColorScheme = Visuals.GetBaseColor();
             MenuBar = CreateMenuBar();
-            var blue = CreateTextColor();
+            var blue = Visuals.CreateTextColor();
             var (textWin, textView, statusBar) = CreateTextView(EmptyFile, blue, blue);
             _textView = textView;
             Add(MenuBar);
             Add(textWin);
             Add(statusBar);
-        }
-
-        private ColorScheme CreateTextColor()
-        {
-            var scheme = new ColorScheme();
-            var driver = Application.Driver;
-            scheme.Normal = driver.MakeAttribute(Color.White, Color.Blue);
-            scheme.Focus = driver.MakeAttribute(Color.White, Color.Blue);
-            return scheme;
         }
 
         private static (Window, TextView, StatusBar) CreateTextView(string title,
@@ -97,7 +91,7 @@ namespace TurboSharp
                 new MenuBarItem("_Compile", new[]
                 {
                     new MenuItem("_Compile", null, DoCompile,
-                        CanCompile, null, Key.AltMask | Key.F9)
+                        CanCompile, null, Key.CtrlMask | Key.F6)
                 }),
                 new MenuBarItem("_Help", new[]
                 {
@@ -126,7 +120,7 @@ namespace TurboSharp
             if (!CanBeClosed())
                 return;
 
-            var allowed = new List<string> { ".cs", ".*" };
+            var allowed = new List<string> { ".cs" };
             var dialog = new OpenDialog("Open", "Choose a single file or more.", allowed)
             {
                 AllowsMultipleSelection = false
@@ -148,13 +142,6 @@ namespace TurboSharp
             _textView.LoadFile(_currentFileName);
             var window = (Window)_textView.SuperView.SuperView;
             window.Title = _currentFileName;
-        }
-
-        private bool IsValidFile()
-        {
-            return !string.IsNullOrWhiteSpace(_currentFileName)
-                   && File.Exists(_currentFileName)
-                   && File.GetCreationTime(_currentFileName) != default;
         }
 
         private void DoNew()
@@ -204,12 +191,12 @@ namespace TurboSharp
 
         private bool CanCompile()
         {
-            return IsValidFile();
+            return Inputs.IsValidFile(_currentFileName);
         }
 
         private void DoCompile()
         {
-            if (!IsValidFile())
+            if (!Inputs.IsValidFile(_currentFileName))
                 return;
             
             CompileOrRun(nameof(Compiler), false);
@@ -217,12 +204,12 @@ namespace TurboSharp
 
         private bool CanRun()
         {
-            return IsValidFile();
+            return Inputs.IsValidFile(_currentFileName);
         }
 
         private void DoRun()
         {
-            if (!IsValidFile())
+            if (!Inputs.IsValidFile(_currentFileName))
                 return;
             
             CompileOrRun(nameof(Runner), true);
