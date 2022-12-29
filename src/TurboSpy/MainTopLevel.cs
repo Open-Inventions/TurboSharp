@@ -6,6 +6,7 @@ using TurboSharp.Common;
 using TurboSpy.Core;
 using TurboSpy.Model;
 using System;
+using System.Linq;
 using Terminal.Gui.Trees;
 
 namespace TurboSpy
@@ -93,8 +94,12 @@ namespace TurboSpy
 
         private void OnTreeSelect(object sender, SelectionChangedEventArgs<SpyItem> e)
         {
-            var debug = sender + " / " + e.NewValue + " / " + e.OldValue + " / " + _textView;
-            _textView.Text = debug;
+            var selected = e.NewValue;
+            if (selected is AssemblyItem ai)
+            {
+                var moduleMeta = ai.One.GetModuleTxt();
+                _textView.Text = moduleMeta;
+            }
         }
 
         private MenuBar CreateMenuBar()
@@ -155,6 +160,8 @@ namespace TurboSpy
         {
             var wrap = new AssemblyItem(one);
             _treeView.AddObject(wrap);
+            if (_treeView.Objects.Count() <= 1)
+                _treeView.GoToFirst();
             _treeView.SetNeedsDisplay();
             _treeView.SetFocus();
         }

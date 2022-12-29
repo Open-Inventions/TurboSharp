@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.TypeSystem;
 
-namespace TurboSpy.Model
+namespace TurboSpy.Core
 {
     public record OneFile(
         CSharpDecompiler Decompiler
@@ -27,5 +28,19 @@ namespace TurboSpy.Model
                     v => v.ToArray());
 
         private const string RootNamespace = "'";
+
+        public string GetModuleTxt()
+        {
+            var bld = new StringBuilder();
+            bld.AppendLine();
+            var main = Decompiler.TypeSystem.MainModule;
+            bld.AppendLine($"// {main.PEFile.FileName}");
+            bld.AppendLine($"// {FullAssemblyName}");
+            bld.AppendLine();
+            var attrs = Decompiler.DecompileModuleAndAssemblyAttributesToString();
+            bld.AppendLine(attrs);
+            bld.AppendLine();
+            return bld.ToString();
+        }
     }
 }

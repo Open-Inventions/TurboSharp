@@ -1,3 +1,5 @@
+using TurboSpy.Core;
+
 namespace TurboSpy.Model
 {
     public class AssemblyItem : SpyItem
