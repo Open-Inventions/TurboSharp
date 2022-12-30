@@ -7,7 +7,7 @@ namespace TurboSpy.Model
     {
         public OneFile One { get; }
 
-        public AssemblyItem(OneFile one)
+        public AssemblyItem(OneFile one) : base(null)
         {
             One = one;
         }
@@ -16,8 +16,12 @@ namespace TurboSpy.Model
 
         public override IEnumerable<SpyItem> GetChildren()
         {
-            var file = One.Decompiler.TypeSystem.MainModule.PEFile;
-            yield return new ReferencesItem(One.ReferencedModules, file);
+            yield return new ReferencesItem(this, One.ReferencedModules);
+
+            foreach (var (k, v) in One.TopLevelTypeDefs)
+            {
+                yield return new NameSpaceItem(this, k, v);
+            }
         }
 
         protected override string Text

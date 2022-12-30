@@ -11,10 +11,10 @@ namespace TurboSpy.Model
         private readonly AssemblyName[] _modules;
         private readonly PEFile _file;
 
-        public ReferencesItem(IEnumerable<AssemblyName> modules, PEFile file)
+        public ReferencesItem(SpyItem parent, IEnumerable<AssemblyName> modules) : base(parent)
         {
             _modules = modules.ToArray();
-            _file = file;
+            _file = ((AssemblyItem)parent).One.File;
         }
 
         public override bool CanExpand => _modules.Any();
@@ -23,7 +23,7 @@ namespace TurboSpy.Model
         {
             foreach (var module in _modules)
             {
-                yield return new ReferenceItem(module);
+                yield return new ReferenceItem(Parent, module);
             }
         }
 

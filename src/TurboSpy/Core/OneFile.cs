@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ICSharpCode.Decompiler.CSharp;
+using ICSharpCode.Decompiler.Metadata;
 using ICSharpCode.Decompiler.TypeSystem;
+using TurboSpy.Model;
 
 namespace TurboSpy.Core
 {
@@ -27,7 +29,9 @@ namespace TurboSpy.Core
                 .ToImmutableSortedDictionary(k => k.Key,
                     v => v.ToArray());
 
-        private const string RootNamespace = "'";
+        public PEFile File => Decompiler.TypeSystem.MainModule.PEFile;
+
+        public const string RootNamespace = "<>";
 
         public string GetModuleTxt()
         {
@@ -41,6 +45,24 @@ namespace TurboSpy.Core
             bld.AppendLine(attrs);
             bld.AppendLine();
             return bld.ToString();
+        }
+
+        public string Decompile(TypeDefItem typeDef)
+        {
+            var name = typeDef.TypeName;
+            var code = Decompiler.DecompileTypeAsString(name);
+
+            if (name.TopLevelTypeName.ToString() == "<Module>" &&
+                string.IsNullOrWhiteSpace(code))
+            {
+                var bld = new StringBuilder();
+                bld.AppendLine($"internal class {name}");
+                bld.AppendLine("{");
+                bld.AppendLine("}");
+                code = bld.ToString();
+            }
+
+            return code;
         }
     }
 }

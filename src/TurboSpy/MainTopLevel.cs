@@ -102,6 +102,18 @@ namespace TurboSpy
                 _textView.Text = refMeta;
                 return;
             }
+            if (selected is NameSpaceItem ni)
+            {
+                var nspMeta = ni.GetListTxt();
+                _textView.Text = nspMeta;
+                return;
+            }
+            if (selected is TypeDefItem ti)
+            {
+                var typeCode = ((AssemblyItem)ti.Parent).One.Decompile(ti);
+                _textView.Text = typeCode;
+                return;
+            }
         }
 
         private MenuBar CreateMenuBar()

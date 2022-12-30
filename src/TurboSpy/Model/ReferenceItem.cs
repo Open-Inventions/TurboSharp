@@ -8,7 +8,7 @@ namespace TurboSpy.Model
     {
         private readonly AssemblyName _module;
 
-        public ReferenceItem(AssemblyName module)
+        public ReferenceItem(SpyItem parent, AssemblyName module) : base(parent)
         {
             _module = module;
         }
