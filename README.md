@@ -10,4 +10,4 @@ Primary use case is running on small and/or restricted devices.
 
 As part of the bigger project, there's also this TUI clone of ILSpy.
 
-![Screenshot 1](/docs/images/screen2.png)
+![Screenshot 2](/docs/images/screen2.png)
