@@ -152,10 +152,18 @@ namespace TurboSpy
         {
             var currentFile = Path.GetFullPath(rawFile);
             if (!Inputs.IsValidFile(currentFile))
+            {
+                ShowError(currentFile);
                 return;
+            }
             var one = LoadFile(currentFile);
             _files[currentFile] = one;
             RefreshTree(one);
+        }
+
+        private static void ShowError(string file)
+        {
+            MessageBox.ErrorQuery("Load error", file, "_OK");
         }
 
         private void RefreshTree(OneFile one)
