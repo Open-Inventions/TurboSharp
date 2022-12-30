@@ -24,10 +24,13 @@ namespace TurboSpy.Core
                 case "System.Byte": return "byte";
                 case "System.Char": return "char";
                 case "System.Int32": return "int";
+                case "System.UInt32": return "uint";
                 case "System.Single": return "float";
                 case "System.Void": return "void";
                 case "System.String": return "string";
                 case "System.Object": return "object";
+                case "System.Exception": return "Exception";
+                case "System.Collections.IList": return "IList";
                 default: throw new InvalidOperationException(full);
             }
         }

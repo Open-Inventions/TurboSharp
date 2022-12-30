@@ -64,5 +64,15 @@ namespace TurboSpy.Core
 
             return code;
         }
+
+        public string Decompile(IEntity entity)
+        {
+            var bld = new StringBuilder();
+            var handle = entity.MetadataToken;
+            bld.AppendLine($"// {entity.DeclaringType?.FullName}");
+            var code = Decompiler.DecompileAsString(handle);
+            bld.AppendLine(code);
+            return bld.ToString();
+        }
     }
 }

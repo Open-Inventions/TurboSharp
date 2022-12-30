@@ -96,9 +96,9 @@ namespace TurboSpy
                 _textView.Text = refsMeta;
                 return;
             }
-            if (selected is ReferenceItem fi)
+            if (selected is ReferenceItem rfi)
             {
-                var refMeta = fi.GetListTxt();
+                var refMeta = rfi.GetListTxt();
                 _textView.Text = refMeta;
                 return;
             }
@@ -110,8 +110,32 @@ namespace TurboSpy
             }
             if (selected is TypeDefItem ti)
             {
-                var typeCode = ((AssemblyItem)ti.Parent).One.Decompile(ti);
-                _textView.Text = typeCode;
+                var code = ((AssemblyItem)ti.Parent).One.Decompile(ti);
+                _textView.Text = code;
+                return;
+            }
+            if (selected is PropertyItem pi)
+            {
+                var code = ((AssemblyItem)pi.Parent).One.Decompile(pi.Property);
+                _textView.Text = code;
+                return;
+            }
+            if (selected is MethodItem mi)
+            {
+                var code = ((AssemblyItem)mi.Parent).One.Decompile(mi.Method);
+                _textView.Text = code;
+                return;
+            }
+            if (selected is FieldItem fi)
+            {
+                var code = ((AssemblyItem)fi.Parent).One.Decompile(fi.Field);
+                _textView.Text = code;
+                return;
+            }
+            if (selected is EventItem ei)
+            {
+                var code = ((AssemblyItem)ei.Parent).One.Decompile(ei.Event);
+                _textView.Text = code;
                 return;
             }
         }
