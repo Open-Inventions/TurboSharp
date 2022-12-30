@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ICSharpCode.Decompiler.TypeSystem;
 
 namespace TurboSpy.Model
@@ -20,7 +21,17 @@ namespace TurboSpy.Model
             yield break;
         }
 
-        protected override string Text => $"[{Kind}] {_def.Name}";
+        protected override string Text => $"[{Kind}] {_def.Name}{Suffix}";
+
+        public string Suffix
+        {
+            get
+            {
+                var prm = string.Join(",", _def.TypeParameters
+                    .Select(t => t.Name));
+                return prm.Length == 0 ? string.Empty : $"<{prm}>";
+            }
+        }
 
         public FullTypeName TypeName => _def.FullTypeName;
 
@@ -39,6 +50,8 @@ namespace TurboSpy.Model
                         return "I";
                     case TypeKind.Struct:
                         return "S";
+                    case TypeKind.Delegate:
+                        return "D";
                     default:
                         throw new InvalidOperationException($"{kind} ?!");
                 }
