@@ -18,30 +18,25 @@ namespace TurboSpy.Model
 
         public override IEnumerable<SpyItem> GetChildren()
         {
-            foreach (var member in _def.Members)
+            foreach (var f in _def.Fields.OrderBy(x => x.Name))
             {
-                if (member is IField f)
-                {
-                    if (f.Name.EndsWith("__BackingField"))
-                        continue;
-                    yield return new FieldItem(Parent, f);
-                }
-                else if (member is IMethod m)
-                {
-                    if (m.GetType().Name == "FakeMethod" || m.Name.StartsWith("<"))
-                        continue;
-                    yield return new MethodItem(Parent, m);
-                }
-                else if (member is IProperty p)
-                {
-                    yield return new PropertyItem(Parent, p);
-                }
-                else if (member is IEvent e)
-                {
-                    yield return new EventItem(Parent, e);
-                }
-                else
-                    throw new InvalidOperationException($"{member} {member.SymbolKind}");
+                if (f.Name.EndsWith("__BackingField"))
+                    continue;
+                yield return new FieldItem(Parent, f);
+            }
+            foreach (var p in _def.Properties.OrderBy(x => x.Name))
+            {
+                yield return new PropertyItem(Parent, p);
+            }
+            foreach (var e in _def.Events.OrderBy(x => x.Name))
+            {
+                yield return new EventItem(Parent, e);
+            }
+            foreach (var m in _def.Methods.OrderBy(x => x.Name))
+            {
+                if (m.GetType().Name == "FakeMethod" || m.Name.StartsWith("<"))
+                    continue;
+                yield return new MethodItem(Parent, m);
             }
         }
 
