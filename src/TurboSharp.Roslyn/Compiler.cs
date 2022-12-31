@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.CSharp.RuntimeBinder;
 using TurboSharp.Roslyn.Core;
 using static TurboSharp.Roslyn.Core.Globals;
-using MR = Microsoft.CodeAnalysis.MetadataReference;
 
 namespace TurboSharp.Roslyn
 {
@@ -46,15 +45,15 @@ namespace TurboSharp.Roslyn
                 return SyntaxFactory.ParseSyntaxTree(code, options);
             });
             var rtAss = Assembly.Load(new AssemblyName("System.Runtime"));
-            var references = new MR[]
+            var references = Assemblies.Locate(new[]
             {
-                MR.CreateFromFile(rtAss.Location),
-                MR.CreateFromFile(typeof(object).Assembly.Location),
-                MR.CreateFromFile(typeof(Console).Assembly.Location),
-                MR.CreateFromFile(typeof(CSharpArgumentInfo).Assembly.Location),
-                MR.CreateFromFile(typeof(Queryable).Assembly.Location),
-                MR.CreateFromFile(typeof(HttpClient).Assembly.Location)
-            };
+                rtAss,
+                typeof(object).Assembly,
+                typeof(Console).Assembly,
+                typeof(CSharpArgumentInfo).Assembly,
+                typeof(Queryable).Assembly,
+                typeof(HttpClient).Assembly
+            });
             var detail = new CSharpCompilationOptions(OutputKind.ConsoleApplication,
                 optimizationLevel: debug ? OptimizationLevel.Debug : OptimizationLevel.Release,
                 assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);

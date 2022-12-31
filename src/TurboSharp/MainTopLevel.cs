@@ -5,7 +5,6 @@ using System.Text;
 using Terminal.Gui;
 using TurboSharp.Common;
 using TurboSharp.Roslyn;
-using TurboSpy;
 
 namespace TurboSharp
 {
@@ -239,7 +238,10 @@ namespace TurboSharp
             }
             catch (Exception e)
             {
-                error = e;
+                if (e is TypeInitializationException tie)
+                    error = tie.InnerException;
+                else
+                    error = e;
             }
 
             var oldOut = Console.Out;
@@ -257,7 +259,7 @@ namespace TurboSharp
             Console.SetError(oldErr);
 
             var nl = Environment.NewLine;
-            var output = (error?.Message + nl + newOut + nl + newErr).Trim();
+            var output = (error?.GetType().Name + nl + error?.Message + nl + newOut + nl + newErr).Trim();
             if (!run && assembly != null)
             {
                 var dir = Path.GetDirectoryName(_currentFileName);
