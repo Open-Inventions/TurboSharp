@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboSpy", "TurboSpy\TurboS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboSharp.Common", "TurboSharp.Common\TurboSharp.Common.csproj", "{FDF35A18-F15A-43B3-BA08-70BDEA18CD23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboSpy.Lib", "TurboSpy.Lib\TurboSpy.Lib.csproj", "{966D5AD0-B264-4681-A112-AC934794E457}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{FDF35A18-F15A-43B3-BA08-70BDEA18CD23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDF35A18-F15A-43B3-BA08-70BDEA18CD23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDF35A18-F15A-43B3-BA08-70BDEA18CD23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{966D5AD0-B264-4681-A112-AC934794E457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{966D5AD0-B264-4681-A112-AC934794E457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{966D5AD0-B264-4681-A112-AC934794E457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{966D5AD0-B264-4681-A112-AC934794E457}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TurboSharp.Common\TurboSharp.Common.csproj" />
     <ProjectReference Include="..\TurboSharp.Roslyn\TurboSharp.Roslyn.csproj" />
+    <ProjectReference Include="..\TurboSpy.Lib\TurboSpy.Lib.csproj" />
   </ItemGroup>
 
 </Project>

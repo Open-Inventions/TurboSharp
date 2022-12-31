@@ -5,6 +5,7 @@ using System.Text;
 using Terminal.Gui;
 using TurboSharp.Common;
 using TurboSharp.Roslyn;
+using TurboSpy;
 
 namespace TurboSharp
 {
@@ -93,11 +94,22 @@ namespace TurboSharp
                     new MenuItem("_Compile", null, DoCompile,
                         CanCompile, null, Key.CtrlMask | Key.F6)
                 }),
+                new MenuBarItem("Too_ls", new[]
+                {
+                    new MenuItem("Turbo_Spy", null, DoSpy,
+                        null, null, Key.CtrlMask | Key.ShiftMask | Key.F7)
+                }),
                 new MenuBarItem("_Help", new[]
                 {
                     new MenuItem("_About...", null, DoAbout)
                 })
             });
+        }
+
+        private void DoSpy()
+        {
+            var spy = new TurboSpy.MainTopLevel(_boot);
+            Application.Run(spy);
         }
 
         private bool CanSaveAll()

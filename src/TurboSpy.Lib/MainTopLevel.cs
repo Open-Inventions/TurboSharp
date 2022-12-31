@@ -10,7 +10,7 @@ using Terminal.Gui.Trees;
 
 namespace TurboSpy
 {
-    internal sealed class MainTopLevel : Toplevel
+    public sealed class MainTopLevel : Toplevel
     {
         private readonly Env _boot;
         private readonly IDictionary<string, OneFile> _files;
