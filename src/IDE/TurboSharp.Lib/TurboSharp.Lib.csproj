@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>TurboSharp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Build\TurboCompile.CSharp\TurboCompile.CSharp.csproj" />
+    <ProjectReference Include="..\..\Run\TurboRun.Lib\TurboRun.Lib.csproj" />
+    <ProjectReference Include="..\..\Spy\TurboSpy.Lib\TurboSpy.Lib.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>TurboSpy</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ICSharpCode.Decompiler" Version="8.0.0.7246-preview3" />
+    <PackageReference Include="ICSharpCode.ILSpyX" Version="8.0.0.7246-preview3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Base\TurboSharp.Common\TurboSharp.Common.csproj" />
+  </ItemGroup>
+
+</Project>
