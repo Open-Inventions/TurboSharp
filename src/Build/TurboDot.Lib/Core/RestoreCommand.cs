@@ -40,7 +40,7 @@ namespace TurboDot.Core
             await nuGet.Download(name, ver);
         }
 
-        private static async Task Restore(IEnumerable<ProjectHandle> projects, NuGet nuGet)
+        public static async Task Restore(IEnumerable<ProjectHandle> projects, NuGet nuGet)
         {
             var packages = projects
                 .SelectMany(p => p.Proj.PackageReferences)
