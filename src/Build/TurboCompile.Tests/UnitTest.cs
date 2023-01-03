@@ -3,7 +3,7 @@ using System.IO;
 using TurboCompile.API;
 using TurboCompile.CSharp;
 using TurboCompile.VBasic;
-using TurboRun.Lib;
+using TurboRun;
 using Xunit;
 
 namespace TurboCompile.Tests

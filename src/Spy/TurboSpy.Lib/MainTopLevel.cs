@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Terminal.Gui;
+using Terminal.Gui.Trees;
 using TurboSharp.Common;
 using TurboSpy.Core;
 using TurboSpy.Model;
-using System.Linq;
-using Terminal.Gui.Trees;
 
 namespace TurboSpy
 {

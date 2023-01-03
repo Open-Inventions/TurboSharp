@@ -5,7 +5,7 @@ using System.Text;
 using Terminal.Gui;
 using TurboCompile.API;
 using TurboCompile.CSharp;
-using TurboRun.Lib;
+using TurboRun;
 using TurboSharp.Common;
 
 namespace TurboSharp
@@ -120,7 +120,7 @@ namespace TurboSharp
 
         private void DoSaveAll()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private bool CanBeClosed()
@@ -159,7 +159,7 @@ namespace TurboSharp
 
         private void DoNew()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private bool CanPaste()
@@ -199,7 +199,7 @@ namespace TurboSharp
 
         private void DoFind()
         {
-            throw new System.NotImplementedException("TODO");
+            throw new NotImplementedException("TODO");
         }
 
         private bool CanCompile()

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace TurboRun.Lib
+namespace TurboRun
 {
     public sealed class UnloadableContext : AssemblyLoadContext
     {

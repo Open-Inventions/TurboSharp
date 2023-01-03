@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace TurboRun.Lib
+namespace TurboRun
 {
     public record Streams(
         TextReader In,

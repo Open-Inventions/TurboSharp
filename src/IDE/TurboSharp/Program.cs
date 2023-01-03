@@ -2,7 +2,6 @@
 using Terminal.Gui;
 using TurboRun;
 using TurboSharp.Common;
-
 using IdeTopLevel = TurboSharp.MainTopLevel;
 using SpyTopLevel = TurboSpy.MainTopLevel;
 using RunCli = TurboRun.Cli;

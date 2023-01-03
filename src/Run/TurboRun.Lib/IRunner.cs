@@ -1,4 +1,4 @@
-﻿namespace TurboRun.Lib
+﻿namespace TurboRun
 {
     public interface IRunner
     {

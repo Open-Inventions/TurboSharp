@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace TurboRun.Lib
+namespace TurboRun
 {
     public sealed class LocalRunner : IRunner
     {

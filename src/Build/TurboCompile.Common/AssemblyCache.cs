@@ -1,9 +1,9 @@
-﻿using SingleFileExtractor.Core;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System;
 using System.Linq;
+using System.Reflection;
+using SingleFileExtractor.Core;
 using TurboCompile.API;
 
 namespace TurboCompile.Common
