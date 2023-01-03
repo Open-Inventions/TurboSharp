@@ -26,15 +26,38 @@ namespace TurboDot.Impl
                     SolutionProjectType.WebProject))
                     continue;
 
-                var path = solProj.AbsolutePath;
-                var ext = Path.GetExtension(path).TrimStart('.');
-                Enum.TryParse<ProjectLang>(ext, ignoreCase: true, out var kind);
-                if (kind == default)
-                    continue;
-
-                var proj = DotNetProject.Load(path);
-                yield return new ProjectHandle(kind, proj, solProj, sol);
+                var item = LoadProject(solProj, sol);
+                yield return item;
             }
+        }
+
+        private static ProjectHandle LoadProject(ProjectInSolution solProj, SolutionFile sol)
+        {
+            return LoadProject(solProj.AbsolutePath, solProj, sol);
+        }
+
+        public static ProjectHandle LoadProject(string path,
+            ProjectInSolution solProj, SolutionFile sol)
+        {
+            var ext = Path.GetExtension(path).TrimStart('.');
+            Enum.TryParse<ProjectLang>(ext, ignoreCase: true, out var kind);
+            if (kind == default)
+                return null;
+
+            var proj = DotNetProject.Load(path);
+            return new ProjectHandle(kind, proj, solProj, sol);
+        }
+
+        public static string GetFolder(this ProjectHandle file)
+        {
+            var path = GetFile(file);
+            return Path.GetDirectoryName(path);
+        }
+
+        public static string GetFile(this ProjectHandle file)
+        {
+            var path = file.Meta.AbsolutePath;
+            return path;
         }
     }
 }
