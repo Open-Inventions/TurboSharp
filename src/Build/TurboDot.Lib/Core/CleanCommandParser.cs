@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using static TurboDot.Tools.Defaults;
 
 namespace TurboDot.Core
 {
@@ -6,7 +7,10 @@ namespace TurboDot.Core
     {
         public static Command GetCommand()
         {
-            var cmd = new Command("clean", "Clean build outputs of a .NET project");
+            const string desc = "Clean build outputs of a .NET project";
+            var cmd = new Command("clean", desc);
+            cmd.AddArgument(SlnOrProjectArgument);
+            cmd.SetHandler(CleanCommand.Run);
             return cmd;
         }
     }

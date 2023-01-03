@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using static TurboDot.Tools.Defaults;
 
 namespace TurboDot.Core
 {
@@ -6,7 +7,10 @@ namespace TurboDot.Core
     {
         public static Command GetCommand()
         {
-            var cmd = new Command("restore", "Restore dependencies specified in a .NET project");
+            const string desc = "Restore dependencies specified in a .NET project";
+            var cmd = new Command("restore", desc);
+            cmd.AddArgument(SlnOrProjectArgument);
+            cmd.SetHandler(RestoreCommand.Run);
             return cmd;
         }
     }
