@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using TurboCompile.Common;
 
 namespace TurboDot.Impl
 {
@@ -42,7 +43,6 @@ namespace TurboDot.Impl
         {
             var pkgDir = Path.GetDirectoryName(pkgPath)!;
             using var pkgZip = ZipFile.OpenRead(pkgPath);
-            var sep = Path.DirectorySeparatorChar;
             foreach (var entry in pkgZip.Entries)
             {
                 var entryName = entry.Name;
@@ -54,7 +54,7 @@ namespace TurboDot.Impl
                 if (entryFull.StartsWith("package/"))
                     continue;
 
-                var entryPath = entryFull.Replace('/', sep);
+                var entryPath = IoTools.FixSlash(entryFull);
                 var entryDest = Path.Combine(pkgDir, entryPath);
                 if (File.Exists(entryDest))
                     continue;

@@ -6,6 +6,7 @@ using System.Linq;
 using Nito.AsyncEx;
 using System.Threading.Tasks;
 using TurboCompile.API;
+using TurboCompile.Common;
 using TurboCompile.CSharp;
 using TurboCompile.VBasic;
 using TurboDot.Impl;
@@ -98,8 +99,8 @@ namespace TurboDot.Core
                 compiler = new CSharpCompiler();
                 files = Directory.GetFiles(dir, "*.cs", o);
             }
-            var sep = Path.DirectorySeparatorChar;
-            files = files.Where(f => !f.Contains($"{sep}bin{sep}")).ToArray();
+            var binPart = IoTools.GetPathPart("bin");
+            files = files.Where(f => !f.Contains(binPart)).ToArray();
             return (compiler, files);
         }
 
