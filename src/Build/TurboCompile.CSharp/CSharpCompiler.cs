@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CSharp.RuntimeBinder;
+using TurboCompile.API;
 using TurboCompile.Roslyn;
 
 namespace TurboCompile.CSharp
@@ -14,8 +15,11 @@ namespace TurboCompile.CSharp
     {
         public const string Extension = ".cs";
 
-        protected override Compilation GenerateCode(bool debug, ICollection<(string, string)> sources)
+        protected override Compilation GenerateCode(CompileArgs args, ICollection<(string, string)> sources)
         {
+            var name = args.Meta.Name;
+            var debug = args.Debug;
+
             var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
             var trees = sources.Select(source =>
             {
@@ -35,13 +39,13 @@ namespace TurboCompile.CSharp
             var detail = new CSharpCompilationOptions(OutputKind.ConsoleApplication,
                 optimizationLevel: debug ? OptimizationLevel.Debug : OptimizationLevel.Release,
                 assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
-            return CSharpCompilation.Create("Runner", trees,
+            return CSharpCompilation.Create(name, trees,
                 references: references, options: detail);
         }
 
-        protected override string GetExtraCode(string name)
+        protected override string GetExtraCode(AssemblyMeta meta)
         {
-            var info = new CsGlobals().SetNameAndVer(name);
+            var info = new CsGlobals().SetNameAndVer(meta);
             var code = info.Generate();
             return code;
         }

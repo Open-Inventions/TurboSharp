@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using TurboCompile.API;
 
 namespace TurboCompile.CSharp
 {
@@ -39,13 +40,13 @@ namespace TurboCompile.CSharp
             return bld.ToString();
         }
 
-        public CsGlobals SetNameAndVer(string name, Version ver = null)
+        public CsGlobals SetNameAndVer(AssemblyMeta meta)
             => this with
             {
-                Ver = ver ?? new Version(1, 0, 0, 0),
-                Company = name,
-                Product = name,
-                Title = name
+                Ver = Version.Parse(meta.Version),
+                Company = meta.Company ?? meta.Name,
+                Product = meta.Product ?? meta.Name,
+                Title = meta.Title ?? meta.Name
             };
     }
 }

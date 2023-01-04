@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using TurboCompile.API;
 
 namespace TurboCompile.VBasic
 {
@@ -31,13 +32,13 @@ namespace TurboCompile.VBasic
             return bld.ToString();
         }
 
-        public VbGlobals SetNameAndVer(string name, Version ver = null)
+        public VbGlobals SetNameAndVer(AssemblyMeta meta)
             => this with
             {
-                Ver = ver ?? new Version(1, 0, 0, 0),
-                Company = name,
-                Product = name,
-                Title = name
+                Ver = Version.Parse(meta.Version),
+                Company = meta.Company ?? meta.Name,
+                Product = meta.Product ?? meta.Name,
+                Title = meta.Title ?? meta.Name
             };
     }
 }

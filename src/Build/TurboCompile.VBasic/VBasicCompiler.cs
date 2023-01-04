@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.VisualBasic;
+using TurboCompile.API;
 using TurboCompile.Roslyn;
 
 namespace TurboCompile.VBasic
@@ -14,8 +15,11 @@ namespace TurboCompile.VBasic
     {
         public const string Extension = ".vb";
 
-        protected override Compilation GenerateCode(bool debug, ICollection<(string, string)> sources)
+        protected override Compilation GenerateCode(CompileArgs args, ICollection<(string, string)> sources)
         {
+            var name = args.Meta.Name;
+            var debug = args.Debug;
+
             var options = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic16_9);
             var trees = sources.Select(source =>
             {
@@ -35,13 +39,13 @@ namespace TurboCompile.VBasic
             var detail = new VisualBasicCompilationOptions(OutputKind.ConsoleApplication,
                 optimizationLevel: debug ? OptimizationLevel.Debug : OptimizationLevel.Release,
                 assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
-            return VisualBasicCompilation.Create("Runner", trees,
+            return VisualBasicCompilation.Create(name, trees,
                 references: references, options: detail);
         }
 
-        protected override string GetExtraCode(string name)
+        protected override string GetExtraCode(AssemblyMeta meta)
         {
-            var info = new VbGlobals().SetNameAndVer(name);
+            var info = new VbGlobals().SetNameAndVer(meta);
             var code = info.Generate();
             return code;
         }

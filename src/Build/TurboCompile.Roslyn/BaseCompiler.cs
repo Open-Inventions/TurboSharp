@@ -14,16 +14,21 @@ namespace TurboCompile.Roslyn
     {
         protected readonly AssemblyCache<MR> AssemblyCache = MetaTool.CreateCache();
 
-        public CompileResult Compile(CompileArgs args)
+        public CompileResult Compile(CompileArgs raw)
         {
-            var first = args.Paths.FirstOrDefault();
-            var extra = GetExtraCode(Path.GetFileNameWithoutExtension(first));
+            var args = raw with
+            {
+                Meta = raw.Meta ?? new AssemblyMeta(
+                    Path.GetFileNameWithoutExtension(raw.Paths.FirstOrDefault())
+                )
+            };
+            var extra = GetExtraCode(args.Meta);
             var sources = new List<(string, string)> { (nameof(extra), extra) };
             var enc = Encoding.UTF8;
             sources.AddRange(args.Paths.Select(path =>
                 (Path.GetFullPath(path), File.ReadAllText(path, enc))));
             using var memory = new MemoryStream();
-            var compile = GenerateCode(args.Debug, sources);
+            var compile = GenerateCode(args, sources);
             var result = compile.Emit(memory);
             if (!result.Success)
             {
@@ -39,9 +44,9 @@ namespace TurboCompile.Roslyn
             return new CompileResult(memory.ToArray(), rtJson);
         }
 
-        protected abstract Compilation GenerateCode(bool debug, ICollection<(string, string)> sources);
+        protected abstract Compilation GenerateCode(CompileArgs args, ICollection<(string, string)> sources);
 
-        protected abstract string GetExtraCode(string name);
+        protected abstract string GetExtraCode(AssemblyMeta meta);
 
         protected Assembly GetRuntimeAssembly()
         {

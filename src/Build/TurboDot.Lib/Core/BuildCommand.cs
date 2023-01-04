@@ -66,7 +66,8 @@ namespace TurboDot.Core
                     return;
             }
 
-            var args = new CompileArgs(paths);
+            var meta = new AssemblyMeta(projName);
+            var args = new CompileArgs(paths, meta);
             var compiled = compiler.Compile(args);
             File.WriteAllBytes(projBinDll, compiled.RawAssembly);
 
@@ -97,6 +98,8 @@ namespace TurboDot.Core
                 compiler = new CSharpCompiler();
                 files = Directory.GetFiles(dir, "*.cs", o);
             }
+            var sep = Path.DirectorySeparatorChar;
+            files = files.Where(f => !f.Contains($"{sep}bin{sep}")).ToArray();
             return (compiler, files);
         }
 
