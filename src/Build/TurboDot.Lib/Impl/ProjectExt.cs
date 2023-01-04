@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using ByteDev.DotNet.Project;
 using Ionide.ProjInfo.Sln.Construction;
+using TurboCompile.Common;
 
 namespace TurboDot.Impl
 {
     public static class ProjectExt
     {
+        private static string GetAbsPath(this ProjectInSolution proj)
+            => IoTools.FixSlash(proj.AbsolutePath);
+
         public static string GetFullPath(this ProjectInSolution proj, ProjectReference pr)
         {
-            var subPath = pr.FilePath;
-            var dir = Path.GetDirectoryName(proj.AbsolutePath) ?? string.Empty;
+            var subPath = IoTools.FixSlash(pr.FilePath);
+            var dir = Path.GetDirectoryName(GetAbsPath(proj)) ?? string.Empty;
             var full = Path.Combine(dir, subPath);
             full = Path.GetFullPath(full);
             return full;
@@ -33,7 +37,7 @@ namespace TurboDot.Impl
 
         private static ProjectHandle LoadProject(ProjectInSolution solProj, SolutionFile sol)
         {
-            return LoadProject(solProj.AbsolutePath, solProj, sol);
+            return LoadProject(GetAbsPath(solProj), solProj, sol);
         }
 
         public static ProjectHandle LoadProject(string path,
@@ -56,7 +60,7 @@ namespace TurboDot.Impl
 
         public static string GetFile(this ProjectHandle file)
         {
-            var path = file.Meta.AbsolutePath;
+            var path = file.Meta.GetAbsPath();
             return path;
         }
     }
