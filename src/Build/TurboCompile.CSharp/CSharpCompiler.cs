@@ -30,7 +30,6 @@ namespace TurboCompile.CSharp
             var references = AssemblyCache.Locate(new[]
             {
                 rtAss,
-                typeof(object).Assembly,
                 typeof(Console).Assembly,
                 typeof(CSharpArgumentInfo).Assembly,
                 typeof(Queryable).Assembly,

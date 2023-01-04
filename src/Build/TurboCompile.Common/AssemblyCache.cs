@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using SingleFileExtractor.Core;
 using TurboCompile.API;
@@ -38,12 +37,10 @@ namespace TurboCompile.Common
                     references[i] = found;
                     continue;
                 }
-                var loc = assembly.Location;
+                var loc = assembly.ReplaceWithRef() ?? assembly.Location;
                 if (string.IsNullOrWhiteSpace(loc))
                 {
-                    var fileName = $"{assembly.GetName().Name}.dll";
-                    var embedded = _manifest?.Files.FirstOrDefault(f =>
-                        f.Type == FileType.Assembly && f.RelativePath == fileName);
+                    var embedded = _manifest.ReplaceWithRef(assembly);
                     if (embedded != null)
                     {
                         var tmpFile = Path.GetFullPath("temp.bin");
