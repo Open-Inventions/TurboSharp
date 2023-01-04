@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using System.IO;
 using System.Linq;
 using Nito.AsyncEx;
 using System.Threading.Tasks;
+using TurboCompile.API;
+using TurboCompile.CSharp;
+using TurboCompile.VBasic;
 using TurboDot.Impl;
 using static TurboDot.Tools.Defaults;
 using TurboDot.Tools;
@@ -44,11 +47,57 @@ namespace TurboDot.Core
             LogSink.Write(" Done with building.");
         }
 
-        private static void DoCompile(NuGet nuGet, ProjectHandle found)
+        private static void DoCompile(NuGet nuGet, ProjectHandle handle)
         {
-            Console.WriteLine($"  {nuGet} - {found.Meta.ProjectName}");
+            var abs = handle.GetFile();
+            LogSink.Write(@$"  Building project ""{abs}""...");
+            var projDir = handle.GetFolder();
+            var binDir = GetBinFolder(projDir);
 
-            // TODO ?!
+            var projName = handle.Meta.ProjectName;
+            var projBinDll = Path.Combine(binDir, $"{projName}.dll");
+            var projBinInfo = new FileInfo(projBinDll);
+            var (compiler, paths) = ListFiles(handle.Lang, projDir);
+            if (projBinInfo.Exists)
+            {
+                var lastWriteDll = projBinInfo.LastWriteTime;
+                var lastWriteSrc = paths.Select(File.GetLastWriteTime).Max();
+                if (lastWriteSrc <= lastWriteDll)
+                    return;
+            }
+
+            var args = new CompileArgs(paths);
+            var compiled = compiler.Compile(args);
+            File.WriteAllBytes(projBinDll, compiled.RawAssembly);
+
+            var projBinRt = Path.Combine(binDir, $"{projName}.runtimeconfig.json");
+            File.WriteAllText(projBinRt, compiled.RuntimeJson);
+        }
+
+        private static string GetBinFolder(string dir,
+            string framework = "net6.0", string mode = "Debug")
+        {
+            var folder = Path.Combine(dir, "bin", mode, framework);
+            return Directory.CreateDirectory(folder).FullName;
+        }
+
+        private static (ICompiler compiler, string[] files) ListFiles(
+            ProjectLang lang, string dir)
+        {
+            const SearchOption o = SearchOption.AllDirectories;
+            ICompiler compiler;
+            string[] files;
+            if (lang == ProjectLang.VbProj)
+            {
+                compiler = new VBasicCompiler();
+                files = Directory.GetFiles(dir, "*.vb", o);
+            }
+            else
+            {
+                compiler = new CSharpCompiler();
+                files = Directory.GetFiles(dir, "*.cs", o);
+            }
+            return (compiler, files);
         }
 
         private static async Task Build(ICollection<ProjectHandle> projects, NuGet nuGet)
