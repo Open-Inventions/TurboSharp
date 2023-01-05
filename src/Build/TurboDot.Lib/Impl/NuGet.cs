@@ -23,7 +23,7 @@ namespace TurboDot.Impl
             _api = "https://api.nuget.org/v3/index.json";
         }
 
-        public async Task Download(string name, string ver)
+        public async Task<string> Download(string name, string ver)
         {
             var pkgPath = GetPath(name, ver);
             if (!File.Exists(pkgPath))
@@ -36,12 +36,13 @@ namespace TurboDot.Impl
                 var checksum = GetCheckSum(pkgPath);
                 await File.WriteAllTextAsync(pkgHashPath, checksum);
             }
-            await Extract(pkgPath);
+            var pkgDir = Path.GetDirectoryName(pkgPath)!;
+            await Extract(pkgPath, pkgDir);
+            return pkgDir;
         }
 
-        private static async Task Extract(string pkgPath)
+        private static async Task Extract(string pkgPath, string pkgDir)
         {
-            var pkgDir = Path.GetDirectoryName(pkgPath)!;
             using var pkgZip = ZipFile.OpenRead(pkgPath);
             foreach (var entry in pkgZip.Entries)
             {

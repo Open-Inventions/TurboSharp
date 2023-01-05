@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using TurboCompile.API;
+using TurboCompile.API.External;
 using TurboCompile.CSharp;
 using TurboCompile.VBasic;
+using TurboDot.Impl;
 using TurboRun;
 using Xunit;
 
@@ -15,6 +17,8 @@ namespace TurboCompile.Tests
         [InlineData("mincon.cs", 16)]
         [InlineData("askname.vb", 88)]
         [InlineData("askname.cs", 85)]
+        [InlineData("weather.vb", 47)]
+        [InlineData("weather.cs", 47)]
         public void ShouldCompile(string rawFile, int len)
         {
             ICompiler compiler;
@@ -34,7 +38,9 @@ namespace TurboCompile.Tests
             }
 
             var paths = new[] { fileName };
-            var (assembly, rtJson) = compiler.Compile(new CompileArgs(paths));
+            IExtRefResolver resolver = new NuGetResolver();
+            var prm = new CompileArgs(paths, Resolver: resolver);
+            var (assembly, rtJson) = compiler.Compile(prm);
             Assert.NotNull(rtJson);
 
             var outDir = Directory.CreateDirectory("Outputs").Name;
@@ -47,7 +53,7 @@ namespace TurboCompile.Tests
             var @out = new StringWriter();
             var err = new StringWriter();
             var fake = new Streams(new StringReader($"Test{nl}{nl}"), @out, err);
-            var runRes = runner.Execute(assembly, args, fake);
+            var runRes = runner.Execute(assembly, args, fake, resolver);
             Assert.True(runRes);
             Assert.Equal(0, err.ToString().Length);
             var outStr = @out.ToString();

@@ -48,9 +48,6 @@ namespace TurboCompile.Roslyn
 
         protected abstract string GetExtraCode(AssemblyMeta meta);
 
-        protected Assembly GetRuntimeAssembly()
-        {
-            return Assembly.Load(new AssemblyName("System.Runtime"));
-        }
+        protected Assembly GetRuntimeAssembly() => Externals.LoadByName("System.Runtime");
     }
 }

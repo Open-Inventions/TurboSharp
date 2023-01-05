@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using SingleFileExtractor.Core;
 using TurboCompile.API;
+using TurboCompile.API.External;
 
 namespace TurboCompile.Common
 {
@@ -25,7 +26,7 @@ namespace TurboCompile.Common
             _manifest = reader.ReadManifest(exe);
         }
 
-        public T[] Locate(Assembly[] assemblies)
+        public T[] Locate(IExternalRef[] assemblies, IExtRefResolver ext = null)
         {
             var references = new T[assemblies.Length];
             for (var i = 0; i < assemblies.Length; i++)
@@ -37,10 +38,10 @@ namespace TurboCompile.Common
                     references[i] = found;
                     continue;
                 }
-                var loc = assembly.ReplaceWithRef() ?? assembly.Location;
+                var loc = assembly.NameObj.ReplaceWithRef() ?? ext?.Locate(assembly);
                 if (string.IsNullOrWhiteSpace(loc))
                 {
-                    var embedded = _manifest.ReplaceWithRef(assembly);
+                    var embedded = _manifest.ReplaceWithRef(assembly.NameObj);
                     if (embedded != null)
                     {
                         var tmpFile = Path.GetFullPath("temp.bin");

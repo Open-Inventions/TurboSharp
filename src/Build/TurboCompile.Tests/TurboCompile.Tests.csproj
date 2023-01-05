@@ -23,6 +23,7 @@
     <ProjectReference Include="..\TurboCompile.CSharp\TurboCompile.CSharp.csproj" />
     <ProjectReference Include="..\TurboCompile.VBasic\TurboCompile.VBasic.csproj" />
     <ProjectReference Include="..\..\Run\TurboRun.Lib\TurboRun.Lib.csproj" />
+    <ProjectReference Include="..\TurboDot.Lib\TurboDot.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

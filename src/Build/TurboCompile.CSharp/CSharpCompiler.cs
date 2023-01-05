@@ -7,6 +7,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CSharp.RuntimeBinder;
 using TurboCompile.API;
+using TurboCompile.API.External;
+using TurboCompile.Common;
 using TurboCompile.Roslyn;
 
 namespace TurboCompile.CSharp
@@ -21,20 +23,22 @@ namespace TurboCompile.CSharp
             var debug = args.Debug;
 
             var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
+            var externals = new HashSet<IExternalRef>();
             var trees = sources.Select(source =>
             {
-                var code = SourceText.From(source.Item2);
+                var code = ReadSource(source.Item2, externals);
                 return SyntaxFactory.ParseSyntaxTree(code, options, source.Item1);
-            });
-            var rtAss = GetRuntimeAssembly();
-            var references = AssemblyCache.Locate(new[]
-            {
-                rtAss,
-                typeof(Console).Assembly,
-                typeof(CSharpArgumentInfo).Assembly,
-                typeof(Queryable).Assembly,
-                typeof(HttpClient).Assembly
-            });
+            }).ToArray();
+            var libs = new AssemblyRef[]
+                {
+                    GetRuntimeAssembly(),
+                    typeof(Console).Assembly,
+                    typeof(CSharpArgumentInfo).Assembly,
+                    typeof(Queryable).Assembly,
+                    typeof(HttpClient).Assembly
+                }
+                .Concat(externals).ToArray();
+            var references = AssemblyCache.Locate(libs, args.Resolver);
             var detail = new CSharpCompilationOptions(OutputKind.ConsoleApplication,
                 optimizationLevel: debug ? OptimizationLevel.Debug : OptimizationLevel.Release,
                 assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
@@ -47,6 +51,15 @@ namespace TurboCompile.CSharp
             var info = new CsGlobals().SetNameAndVer(meta);
             var code = info.Generate();
             return code;
+        }
+
+        private static SourceText ReadSource(string text, ISet<IExternalRef> refs)
+        {
+            var tmp = Externals.Parse("//#r", text);
+            Array.ForEach(tmp, r => refs.Add(r));
+
+            var source = SourceText.From(text);
+            return source;
         }
     }
 }

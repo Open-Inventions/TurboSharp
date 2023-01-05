@@ -20,20 +20,20 @@ namespace TurboCompile.Common
             return refs;
         }
 
-        public static string ReplaceWithRef(this Assembly assembly)
+        public static string ReplaceWithRef(this AssemblyName assembly)
         {
-            var name = $"{assembly.GetName().Name}.dll";
+            var name = $"{assembly.Name}.dll";
             var found = CompileLibs.Value?
                 .FirstOrDefault(l => Path.GetFileName(l) == name);
             return found;
         }
 
-        public static FileEntry ReplaceWithRef(this Manifest manifest, Assembly assembly)
+        public static FileEntry ReplaceWithRef(this Manifest manifest, AssemblyName assembly)
         {
             if (manifest == null)
                 return null;
 
-            var runName = $"{assembly.GetName().Name}.dll";
+            var runName = $"{assembly.Name}.dll";
             var refName = $"refs/{runName}";
 
             var embedded = manifest.Files.FirstOrDefault(f =>
