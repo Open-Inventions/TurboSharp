@@ -6,6 +6,7 @@ namespace TurboCompile.API
         string[] Paths,
         AssemblyMeta Meta = null,
         IExtRefResolver Resolver = null,
+        IExternalRef[] Additional = null,
         bool Debug = true
     );
 }

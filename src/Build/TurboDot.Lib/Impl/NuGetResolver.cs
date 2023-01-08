@@ -9,10 +9,12 @@ namespace TurboDot.Impl
 {
     public sealed class NuGetResolver : IExtRefResolver
     {
+        private readonly bool _allowDownload;
         private readonly NuGet _nuGet;
 
-        public NuGetResolver(NuGet nuGet = null)
+        public NuGetResolver(NuGet nuGet = null, bool allowDownload = true)
         {
+            _allowDownload = allowDownload;
             _nuGet = nuGet ?? new NuGet(nameof(NuGet).ToLower());
         }
 
@@ -30,7 +32,9 @@ namespace TurboDot.Impl
                     var nLoc = LoadByName(nr.NameObj).Location;
                     return nLoc;
                 case NuGetRef ur:
-                    var uTask = _nuGet.Download(ur.Name, ur.Version);
+                    var uTask = _allowDownload
+                        ? _nuGet.Download(ur.Name, ur.Version)
+                        : _nuGet.FindMatch(ur.Name, ur.Version);
                     var uPath = uTask.GetAwaiter().GetResult();
                     var possible = new[]
                     {

@@ -24,6 +24,8 @@ namespace TurboCompile.CSharp
 
             var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
             var externals = new HashSet<IExternalRef>();
+            if (args.Additional != null)
+                Array.ForEach(args.Additional, a => externals.Add(a));
             var trees = sources.Select(source =>
             {
                 var code = ReadSource(source.Item2, externals);

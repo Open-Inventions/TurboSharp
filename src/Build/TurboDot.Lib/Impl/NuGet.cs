@@ -23,6 +23,13 @@ namespace TurboDot.Impl
             _api = "https://api.nuget.org/v3/index.json";
         }
 
+        public Task<string> FindMatch(string name, string ver)
+        {
+            var pkgPath = GetPath(name, ver);
+            var pkgDir = Path.GetDirectoryName(pkgPath)!;
+            return Task.FromResult(pkgDir);
+        }
+
         public async Task<string> Download(string name, string ver)
         {
             var pkgPath = GetPath(name, ver);

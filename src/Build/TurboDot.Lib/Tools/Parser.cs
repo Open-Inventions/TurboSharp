@@ -5,10 +5,10 @@ namespace TurboDot.Tools
 {
     public static class Parser
     {
-        public static readonly RootCommand RootCommand =
+        public static RootCommand RootCommand =>
             new("Execute a .NET SDK command");
 
-        private static readonly Command[] SubCommands =
+        private static Command[] SubCommands => new[]
         {
             BuildCommandParser.GetCommand(),
             CleanCommandParser.GetCommand(),

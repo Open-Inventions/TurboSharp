@@ -24,6 +24,8 @@ namespace TurboCompile.VBasic
 
             var options = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic16_9);
             var externals = new HashSet<IExternalRef>();
+            if (args.Additional != null)
+                Array.ForEach(args.Additional, a => externals.Add(a));
             var trees = sources.Select(source =>
             {
                 var code = ReadSource(source.Item2, externals);

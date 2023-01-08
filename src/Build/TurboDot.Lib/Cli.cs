@@ -78,8 +78,9 @@ namespace TurboDot
             if (pair.prj != null)
                 yield return pair.prj;
 
-            foreach (var project in pair.sol.LoadProjects())
-                yield return project;
+            if (pair.sol != null)
+                foreach (var project in pair.sol.LoadProjects())
+                    yield return project;
         }
     }
 }

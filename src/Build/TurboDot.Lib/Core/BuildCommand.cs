@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
@@ -13,6 +14,7 @@ using TurboDot.Impl;
 using static TurboDot.Tools.Defaults;
 using TurboDot.Tools;
 using static TurboDot.Core.RestoreCommand;
+using TurboCompile.API.External;
 
 namespace TurboDot.Core
 {
@@ -48,14 +50,14 @@ namespace TurboDot.Core
             LogSink.Write(" Done with building.");
         }
 
-        private static void DoCompile(NuGet nuGet, ProjectHandle handle)
+        private static void DoCompile(IExtRefResolver extResolver, ProjectHandle handle)
         {
             var abs = handle.GetFile();
             LogSink.Write(@$"  Building project ""{abs}""...");
             var projDir = handle.GetFolder();
             var binDir = GetBinFolder(projDir);
 
-            var projName = handle.Meta.ProjectName;
+            var projName = handle.ProjectName;
             var projBinDll = Path.Combine(binDir, $"{projName}.dll");
             var projBinInfo = new FileInfo(projBinDll);
             var (compiler, paths) = ListFiles(handle.Lang, projDir);
@@ -67,8 +69,23 @@ namespace TurboDot.Core
                     return;
             }
 
+            var packs = handle.Proj.PackageReferences
+                .Select(p => (IExternalRef)new NuGetRef(p.Name, p.Version));
+            var locals = handle.Proj.ProjectReferences
+                .Select(p => new LocalRef(p.FilePath));
+            var dependencies = packs.Concat(locals).ToArray();
+
+            var resolver = new FuncExtRefResolver(e =>
+            {
+                var ePath = extResolver.Locate(e);
+                var depDllName = Path.GetFileName(ePath);
+                var depDestPath = Path.Combine(binDir, depDllName);
+                File.Copy(ePath, depDestPath, overwrite: true);
+                return depDestPath;
+            });
+
             var meta = new AssemblyMeta(projName);
-            var args = new CompileArgs(paths, meta);
+            var args = new CompileArgs(paths, meta, resolver, dependencies);
             var compiled = compiler.Compile(args);
             File.WriteAllBytes(projBinDll, compiled.RawAssembly);
 
@@ -100,22 +117,25 @@ namespace TurboDot.Core
                 files = Directory.GetFiles(dir, "*.cs", o);
             }
             var binPart = IoTools.GetPathPart("bin");
-            files = files.Where(f => !f.Contains(binPart)).ToArray();
+            if (!dir.Contains(binPart))
+                files = files.Where(f => !f.Contains(binPart)).ToArray();
             return (compiler, files);
         }
 
         private static async Task Build(ICollection<ProjectHandle> projects, NuGet nuGet)
         {
+            var resolver = new NuGetResolver(allowDownload: false, nuGet: nuGet);
+
             var events = projects.ToDictionary(
-                k => k.Meta.AbsolutePath,
+                k => k.AbsolutePath,
                 _ => new AsyncManualResetEvent(false));
 
             var tasks = projects.Select(f => Task.Run(async () =>
             {
                 foreach (var projRef in f.Proj.ProjectReferences)
-                    await events[f.Meta.GetFullPath(projRef)].WaitAsync();
-                DoCompile(nuGet, f);
-                events[f.Meta.AbsolutePath].Set();
+                    await events[f.GetFullPath(projRef)].WaitAsync();
+                DoCompile(resolver, f);
+                events[f.AbsolutePath].Set();
             }));
             await Task.WhenAll(tasks);
 

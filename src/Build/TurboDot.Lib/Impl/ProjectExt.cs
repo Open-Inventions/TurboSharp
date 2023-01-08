@@ -49,7 +49,7 @@ namespace TurboDot.Impl
                 return null;
 
             var proj = DotNetProject.Load(path);
-            return new ProjectHandle(kind, proj, solProj, sol);
+            return new ProjectHandle(kind, path, proj, solProj, sol);
         }
 
         public static string GetFolder(this ProjectHandle file)
@@ -60,7 +60,7 @@ namespace TurboDot.Impl
 
         public static string GetFile(this ProjectHandle file)
         {
-            var path = file.Meta.GetAbsPath();
+            var path = file.AbsolutePath;
             return path;
         }
     }
