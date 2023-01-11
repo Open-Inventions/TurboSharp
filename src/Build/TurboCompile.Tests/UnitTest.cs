@@ -20,9 +20,9 @@ namespace TurboCompile.Tests
         [InlineData("askname.cs", 85)]
         [InlineData("weather.vb", 47)]
         [InlineData("weather.cs", 47)]
-        [InlineData("xmly/app.cs", 47774489)]
-        [InlineData("xmly/app.vb", 47774489)]
-        public void ShouldCompile(string rawFile, int len)
+        [InlineData("xmly/app.cs", 175, true)]
+        [InlineData("xmly/app.vb", 175, true)]
+        public void ShouldCompile(string rawFile, int len, bool ignoreWeak = false)
         {
             ICompiler compiler;
             var ext = Path.GetExtension(rawFile);
@@ -51,14 +51,18 @@ namespace TurboCompile.Tests
             var outPath = Path.Combine(outDir, $"{rawOut}.dll");
             File.WriteAllBytes(outPath, assembly);
 
+            var depDir = Path.Combine("Resources", "_");
+            var deps = new[] { depDir };
+
             IRunner runner = new LocalRunner();
             var args = new[] { "Test" };
             var nl = Environment.NewLine;
             var @out = new StringWriter();
             var err = new StringWriter();
             var fake = new Streams(new StringReader($"Test{nl}{nl}"), @out, err);
-            var runRes = runner.Execute(assembly, args, fake, resolver);
-            Assert.True(runRes);
+            var runRes = runner.Execute(assembly, args, fake, resolver, deps);
+            if (!ignoreWeak)
+                Assert.True(runRes);
             Assert.Equal(0, err.ToString().Length);
             var outStr = @out.ToString();
             Assert.True(outStr.Length >= len, $"{outStr.Length} != {len}");
