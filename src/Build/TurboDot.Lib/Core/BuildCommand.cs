@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;

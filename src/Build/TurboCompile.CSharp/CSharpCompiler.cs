@@ -28,7 +28,7 @@ namespace TurboCompile.CSharp
                 Array.ForEach(args.Additional, a => externals.Add(a));
             var trees = sources.Select(source =>
             {
-                var code = ReadSource(source.Item2, externals);
+                var code = ReadSource(source, externals);
                 return SyntaxFactory.ParseSyntaxTree(code, options, source.Item1);
             }).ToArray();
             var libs = new AssemblyRef[]
@@ -55,12 +55,12 @@ namespace TurboCompile.CSharp
             return code;
         }
 
-        private static SourceText ReadSource(string text, ISet<IExternalRef> refs)
+        private static SourceText ReadSource((string file, string text) s, ISet<IExternalRef> refs)
         {
-            var tmp = Externals.Parse("//#r", text);
+            var tmp = Externals.Parse("//#r", s.text, s.file);
             Array.ForEach(tmp, r => refs.Add(r));
 
-            var source = SourceText.From(text);
+            var source = SourceText.From(s.text);
             return source;
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Reflection;
 using TurboCompile.API.External;
 
@@ -6,18 +7,18 @@ namespace TurboCompile.Common
 {
     public static class Externals
     {
-        public static NuGetRef[] Parse(string prefix, string text)
+        public static IExternalRef[] Parse(string prefix, string text, string file)
         {
             var lines = text.Split('\n')
                 .TakeWhile(l => l.StartsWith(prefix))
-                .Select(l => Parse(l[prefix.Length..]))
+                .Select(l => Parse(l[prefix.Length..], file))
                 .ToArray();
             return lines;
         }
 
         private const string NugetPrefix = "nuget:";
 
-        private static NuGetRef Parse(string line)
+        private static IExternalRef Parse(string line, string file)
         {
             var term = line.Trim().Trim('"');
             if (term.StartsWith(NugetPrefix))
@@ -27,6 +28,14 @@ namespace TurboCompile.Common
                 var pkgName = parts.First().Trim();
                 var pkgVer = parts.Skip(1).First().Trim();
                 return new NuGetRef(pkgName, pkgVer);
+            }
+            if (term.EndsWith(".dll"))
+            {
+                var relPath = IoTools.FixSlash(term);
+                var fileDir = Path.GetDirectoryName(file) ?? string.Empty;
+                var absPath = Path.Combine(fileDir, relPath);
+                absPath = Path.GetFullPath(absPath);
+                return new LocalRef(absPath);
             }
             return null;
         }
