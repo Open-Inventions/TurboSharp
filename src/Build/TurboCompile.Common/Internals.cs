@@ -31,14 +31,15 @@ namespace TurboCompile.Common
             string path, Func<(string, string), string[]> func)
         {
             var full = Path.GetFullPath(path);
-            var code = File.ReadAllText(path, Enc);
+            var code = File.ReadAllText(full, Enc);
+            var res = (full, code);
 
-            var loads = func.Invoke((path, code));
+            var loads = func.Invoke(res);
             foreach (var load in loads)
             foreach (var loaded in ReadCode(load, func))
                 yield return loaded;
 
-            yield return (full, code);
+            yield return res;
         }
     }
 }

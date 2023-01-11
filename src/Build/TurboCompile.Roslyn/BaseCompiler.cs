@@ -25,15 +25,15 @@ namespace TurboCompile.Roslyn
             };
             var extra = GetExtraCode(args.Meta);
             var sources = new List<(string, string)> { (nameof(extra), extra) };
+            var visited = new HashSet<string>();
             foreach (var path in args.Paths)
             {
                 foreach (var item in ReadCode(path, f =>
                          {
-                             if (sources.Contains(f))
-                             {
-                                 return Array.Empty<string>();
-                             }
-                             return Load(f);
+                             visited.Add(f.Item1);
+                             var rest = Load(f).Except(visited).ToArray();
+                             Array.ForEach(rest, ra => visited.Add(ra));
+                             return rest;
                          }))
                     sources.Add(item);
             }
