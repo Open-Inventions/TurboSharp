@@ -23,7 +23,7 @@ namespace TurboCompile.VBasic
             var debug = args.Debug;
 
             var options = VisualBasicParseOptions.Default.WithLanguageVersion(LanguageVersion.VisualBasic16_9);
-            var externals = new HashSet<IExternalRef>();
+            var externals = BaseRefs.CreateStdSet();
             if (args.Additional != null)
                 Array.ForEach(args.Additional, a => externals.Add(a));
             var trees = sources.Select(source =>

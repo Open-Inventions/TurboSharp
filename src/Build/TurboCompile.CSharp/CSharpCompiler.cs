@@ -23,7 +23,7 @@ namespace TurboCompile.CSharp
             var debug = args.Debug;
 
             var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
-            var externals = new HashSet<IExternalRef>();
+            var externals = BaseRefs.CreateStdSet();
             if (args.Additional != null)
                 Array.ForEach(args.Additional, a => externals.Add(a));
             var trees = sources.Select(source =>
