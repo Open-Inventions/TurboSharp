@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using TurboCompile.API;
 using TurboCompile.API.External;
+using TurboCompile.Common;
 using TurboCompile.CSharp;
 using TurboCompile.VBasic;
 using TurboDot.Impl;
@@ -19,6 +20,8 @@ namespace TurboCompile.Tests
         [InlineData("askname.cs", 85)]
         [InlineData("weather.vb", 47)]
         [InlineData("weather.cs", 47)]
+        [InlineData("xmly/app.cs", 47774489)]
+        [InlineData("xmly/app.vb", 47774489)]
         public void ShouldCompile(string rawFile, int len)
         {
             ICompiler compiler;
@@ -37,14 +40,15 @@ namespace TurboCompile.Tests
                     return;
             }
 
-            var paths = new[] { fileName };
+            var paths = new[] { IoTools.FixSlash(fileName) };
             IExtRefResolver resolver = new NuGetResolver();
             var prm = new CompileArgs(paths, Resolver: resolver);
             var (assembly, rtJson) = compiler.Compile(prm);
             Assert.NotNull(rtJson);
 
             var outDir = Directory.CreateDirectory("Outputs").Name;
-            var outPath = Path.Combine(outDir, $"{rawFile}.dll");
+            var rawOut = rawFile.Replace('/', '_');
+            var outPath = Path.Combine(outDir, $"{rawOut}.dll");
             File.WriteAllBytes(outPath, assembly);
 
             IRunner runner = new LocalRunner();

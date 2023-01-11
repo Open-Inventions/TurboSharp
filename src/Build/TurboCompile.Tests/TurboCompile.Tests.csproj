@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Resources\**\*.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>    
     <Compile Remove="Resources\**\*.cs" />
     <None Include="Resources\**\*.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

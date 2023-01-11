@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TurboCompile.API.External;
 
-namespace TurboCompile.Roslyn
+namespace TurboCompile.Common
 {
     public static class BaseRefs
     {

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using TurboCompile.API.External;
 
@@ -10,7 +9,8 @@ namespace TurboCompile.Common
         public static IExternalRef[] Parse(string prefix, string text, string file)
         {
             var lines = text.Split('\n')
-                .TakeWhile(l => l.StartsWith(prefix))
+                .TakeWhile(l => !string.IsNullOrWhiteSpace(l))
+                .Where(l => l.StartsWith(prefix))
                 .Select(l => Parse(l[prefix.Length..], file))
                 .ToArray();
             return lines;
@@ -31,10 +31,7 @@ namespace TurboCompile.Common
             }
             if (term.EndsWith(".dll"))
             {
-                var relPath = IoTools.FixSlash(term);
-                var fileDir = Path.GetDirectoryName(file) ?? string.Empty;
-                var absPath = Path.Combine(fileDir, relPath);
-                absPath = Path.GetFullPath(absPath);
+                var absPath = IoTools.GetAbsPath(term, file);
                 return new LocalRef(absPath);
             }
             return null;

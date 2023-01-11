@@ -63,5 +63,11 @@ namespace TurboCompile.VBasic
             var source = SourceText.From(s.text);
             return source;
         }
+
+        protected override string[] Load((string file, string text) s)
+        {
+            var top = Internals.Parse("'#load", s.text, s.file);
+            return top;
+        }
     }
 }

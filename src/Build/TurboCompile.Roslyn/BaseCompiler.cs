@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using TurboCompile.API;
 using TurboCompile.Common;
+using static TurboCompile.Common.Internals;
 using MR = Microsoft.CodeAnalysis.MetadataReference;
 
 namespace TurboCompile.Roslyn
@@ -24,9 +25,18 @@ namespace TurboCompile.Roslyn
             };
             var extra = GetExtraCode(args.Meta);
             var sources = new List<(string, string)> { (nameof(extra), extra) };
-            var enc = Encoding.UTF8;
-            sources.AddRange(args.Paths.Select(path =>
-                (Path.GetFullPath(path), File.ReadAllText(path, enc))));
+            foreach (var path in args.Paths)
+            {
+                foreach (var item in ReadCode(path, f =>
+                         {
+                             if (sources.Contains(f))
+                             {
+                                 return Array.Empty<string>();
+                             }
+                             return Load(f);
+                         }))
+                    sources.Add(item);
+            }
             using var memory = new MemoryStream();
             var compile = GenerateCode(args, sources);
             var result = compile.Emit(memory);
@@ -43,6 +53,8 @@ namespace TurboCompile.Roslyn
             var rtJson = Globals.Net6RtJson;
             return new CompileResult(memory.ToArray(), rtJson);
         }
+
+        protected abstract string[] Load((string file, string text) s);
 
         protected abstract Compilation GenerateCode(CompileArgs args, ICollection<(string, string)> sources);
 
