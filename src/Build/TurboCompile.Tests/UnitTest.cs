@@ -18,10 +18,10 @@ namespace TurboCompile.Tests
         [InlineData("mincon.cs", 16)]
         [InlineData("askname.vb", 88)]
         [InlineData("askname.cs", 85)]
-        [InlineData("weather.vb", 47)]
-        [InlineData("weather.cs", 47)]
-        [InlineData("xmly/app.cs", 175, true)]
-        [InlineData("xmly/app.vb", 175, true)]
+        [InlineData("weather.vb", 46)]
+        [InlineData("weather.cs", 46)]
+        [InlineData("xmly/app.cs", 172, true)]
+        [InlineData("xmly/app.vb", 172, true)]
         public void ShouldCompile(string rawFile, int len, bool ignoreWeak = false)
         {
             ICompiler compiler;
