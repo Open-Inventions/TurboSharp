@@ -12,6 +12,12 @@ namespace TurboDot.Tests
         [InlineData("Resty.zip", @"Resty.sln")]
         [InlineData("Resty.zip", @"RestyC/RestyC.csproj")]
         [InlineData("Resty.zip", @"RestyV/RestyV.vbproj")]
+        [InlineData("Xmly.zip", @"Xmly.sln")]
+        [InlineData("Xmly.zip", @"Xmly.Embed/Xmly.Embed.csproj")]
+        [InlineData("Xmly.zip", @"XmlyC/XmlyC.csproj")]
+        [InlineData("Xmly.zip", @"XmlyC.Model/XmlyC.Model.csproj")]
+        [InlineData("Xmly.zip", @"XmlyV/XmlyV.vbproj")]
+        [InlineData("Xmly.zip", @"XmlyV.Model/XmlyV.Model.vbproj")]
         public async Task ShouldBuild(string zipFile, string rawZipPath)
         {
             var fileName = Path.Combine("Resources", zipFile);

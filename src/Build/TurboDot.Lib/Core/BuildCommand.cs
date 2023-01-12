@@ -70,23 +70,36 @@ namespace TurboDot.Core
 
             var packs = handle.Proj.PackageReferences
                 .Select(p => (IExternalRef)new NuGetRef(p.Name, p.Version));
-            var locals = handle.Proj.ProjectReferences
-                .Select(p => new LocalRef(p.FilePath));
-            var dependencies = packs.Concat(locals).ToArray();
+            var projs = handle.Proj.ProjectReferences
+                .Select(p => new LocalRef(handle.GetFullPath(p)));
+            var locals = handle.Proj.LocalReferences
+                .Select(p => new LocalRef(handle.GetFullPath(p)));
+            var dependencies = packs.Concat(projs).Concat(locals).ToArray();
 
             var resolver = new FuncExtRefResolver(e =>
             {
                 var ePath = extResolver.Locate(e);
+                var eName = Path.GetFileNameWithoutExtension(ePath);
+                if (ePath.EndsWith("proj"))
+                {
+                    var depPrj = Path.GetDirectoryName(ePath) ?? string.Empty;
+                    var depBin = Path.Combine(depPrj, "bin", "Debug", "net6.0");
+                    ePath = Path.Combine(depBin, $"{eName}.dll");
+                }
                 var depDllName = Path.GetFileName(ePath);
                 var depDestPath = Path.Combine(binDir, depDllName);
                 File.Copy(ePath, depDestPath, overwrite: true);
                 return depDestPath;
             });
 
+            var kind = handle.Proj.OutputType.ToKind();
             var meta = new AssemblyMeta(projName);
-            var args = new CompileArgs(paths, meta, resolver, dependencies);
+            var args = new CompileArgs(paths, kind, meta, resolver, dependencies);
             var compiled = compiler.Compile(args);
             File.WriteAllBytes(projBinDll, compiled.RawAssembly);
+
+            if (kind == OutputType.Library)
+                return;
 
             var projBinRt = Path.Combine(binDir, $"{projName}.runtimeconfig.json");
             File.WriteAllText(projBinRt, compiled.RuntimeJson);

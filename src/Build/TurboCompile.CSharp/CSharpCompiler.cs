@@ -41,7 +41,7 @@ namespace TurboCompile.CSharp
                 }
                 .Concat(externals).ToArray();
             var references = AssemblyCache.Locate(libs, args.Resolver);
-            var detail = new CSharpCompilationOptions(OutputKind.ConsoleApplication,
+            var detail = new CSharpCompilationOptions(args.Kind.ToKind(),
                 optimizationLevel: debug ? OptimizationLevel.Debug : OptimizationLevel.Release,
                 assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
             return CSharpCompilation.Create(name, trees,

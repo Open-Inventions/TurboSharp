@@ -237,7 +237,8 @@ namespace TurboSharp
             try
             {
                 var compiler = new CSharpCompiler();
-                var arg = new CompileArgs(new[] { _currentFileName });
+                var kind = OutputType.Console;
+                var arg = new CompileArgs(new[] { _currentFileName }, kind);
                 (assembly, json) = compiler.Compile(arg);
             }
             catch (Exception e)

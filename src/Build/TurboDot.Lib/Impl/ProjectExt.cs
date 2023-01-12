@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using ByteDev.DotNet.Project;
 using Ionide.ProjInfo.Sln.Construction;
+using TurboCompile.API;
 using TurboCompile.Common;
+using TurboDot.Meta;
 
 namespace TurboDot.Impl
 {
@@ -48,7 +50,7 @@ namespace TurboDot.Impl
             if (kind == default)
                 return null;
 
-            var proj = DotNetProject.Load(path);
+            var proj = NetProject.Load(path);
             return new ProjectHandle(kind, path, proj, solProj, sol);
         }
 
@@ -62,6 +64,19 @@ namespace TurboDot.Impl
         {
             var path = file.AbsolutePath;
             return path;
+        }
+
+        public static OutputType ToKind(this ProjOutput type)
+        {
+            switch (type)
+            {
+                case ProjOutput.Lib:
+                    return OutputType.Library;
+                case ProjOutput.Exe:
+                    return OutputType.Console;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
     }
 }

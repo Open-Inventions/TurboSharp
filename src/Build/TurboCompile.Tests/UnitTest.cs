@@ -42,7 +42,8 @@ namespace TurboCompile.Tests
 
             var paths = new[] { IoTools.FixSlash(fileName) };
             IExtRefResolver resolver = new NuGetResolver();
-            var prm = new CompileArgs(paths, Resolver: resolver);
+            var kind = OutputType.Console;
+            var prm = new CompileArgs(paths, kind, Resolver: resolver);
             var (assembly, rtJson) = compiler.Compile(prm);
             Assert.NotNull(rtJson);
 

@@ -76,7 +76,16 @@ namespace TurboDot
             (SolutionFile sol, ProjectHandle prj) pair)
         {
             if (pair.prj != null)
+            {
+                foreach (var dep in pair.prj.Proj.ProjectReferences)
+                {
+                    var depPath = pair.prj.GetFullPath(dep);
+                    var depPrj = ReadSlnOrProject(new FileInfo(depPath)).prj;
+                    foreach (var one in ListProjects((pair.sol, depPrj)))
+                        yield return one;
+                }
                 yield return pair.prj;
+            }
 
             if (pair.sol != null)
                 foreach (var project in pair.sol.LoadProjects())

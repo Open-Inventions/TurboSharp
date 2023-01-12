@@ -4,6 +4,7 @@ namespace TurboCompile.API
 {
     public record CompileArgs(
         string[] Paths,
+        OutputType Kind,
         AssemblyMeta Meta = null,
         IExtRefResolver Resolver = null,
         IExternalRef[] Additional = null,

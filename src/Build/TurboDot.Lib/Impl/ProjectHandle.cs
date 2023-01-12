@@ -1,15 +1,15 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using ByteDev.DotNet.Project;
 using Ionide.ProjInfo.Sln.Construction;
 using TurboCompile.Common;
+using TurboDot.Meta;
 
 namespace TurboDot.Impl
 {
     public record ProjectHandle(
         ProjectLang Lang,
         string OriginalPath,
-        DotNetProject Proj,
+        NetProject Proj,
         ProjectInSolution Meta,
         SolutionFile Sol
     )
@@ -25,6 +25,9 @@ namespace TurboDot.Impl
                 : Meta.ProjectName;
 
         public string GetFullPath(ProjectReference projRef)
-            => throw new InvalidOperationException(); // TODO
+            => IoTools.GetAbsPath(projRef.FilePath, AbsolutePath);
+
+        public string GetFullPath(LocalReference locRef)
+            => IoTools.GetAbsPath(locRef.Path, AbsolutePath);
     }
 }
