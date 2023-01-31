@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Build\TurboDot.Lib\TurboDot.Lib.csproj" />
     <ProjectReference Include="..\..\Spy\TurboSpy.Lib\TurboSpy.Lib.csproj" />
     <ProjectReference Include="..\TurboSharp.Lib\TurboSharp.Lib.csproj" />
   </ItemGroup>

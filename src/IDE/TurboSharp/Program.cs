@@ -1,4 +1,5 @@
 ﻿using System;
+using TurboDot;
 using TurboRun;
 using TurboRun.Tools;
 using TurboSharp.Core;
@@ -21,6 +22,11 @@ namespace TurboSharp
             if (mode == MainCommand.Run)
             {
                 return RunCli.Main(args);
+            }
+
+            if (mode == MainCommand.Dot)
+            {
+                return DotCli.Main(args).GetAwaiter().GetResult();
             }
 
             if (mode == MainCommand.Spy)

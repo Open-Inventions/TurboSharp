@@ -6,6 +6,8 @@
 
         Run,
 
-        Spy
+        Spy,
+        
+        Dot
     }
 }
