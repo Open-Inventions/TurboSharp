@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,15 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ionide.ProjInfo.Sln" Version="0.61.1" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TurboCompile.CSharp\TurboCompile.CSharp.csproj" />
-    <ProjectReference Include="..\TurboCompile.VBasic\TurboCompile.VBasic.csproj" />
-    <ProjectReference Include="..\TurboDot.Meta\TurboDot.Meta.csproj" />
+    <ProjectReference Include="..\..\Core\TurboCompile.CSharp\TurboCompile.CSharp.csproj" />
+    <ProjectReference Include="..\..\Core\TurboCompile.VBasic\TurboCompile.VBasic.csproj" />
+    <ProjectReference Include="..\..\Core\TurboMeta.CSharp\TurboMeta.CSharp.csproj" />
+    <ProjectReference Include="..\..\Core\TurboMeta.VBasic\TurboMeta.VBasic.csproj" />
+    <ProjectReference Include="..\..\Core\TurboRepo.Nuget\TurboRepo.Nuget.csproj" />
   </ItemGroup>
 
 </Project>

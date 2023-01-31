@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Base\TurboSharp.Common\TurboSharp.Common.csproj" />
+    <ProjectReference Include="..\..\Base\TurboBase.IO\TurboBase.IO.csproj" />
+    <ProjectReference Include="..\..\Base\TurboBase.UI\TurboBase.UI.csproj" />
   </ItemGroup>
 
 </Project>

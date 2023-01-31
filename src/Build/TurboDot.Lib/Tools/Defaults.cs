@@ -6,10 +6,10 @@ namespace TurboDot.Tools
     internal static class Defaults
     {
         private const string SolutionOrProjectArgName
-            = "PROJECT | SOLUTION";
+            = "SCRIPT | PROJECT | SOLUTION";
 
         private const string SolutionOrProjectArgument
-            = "The project or solution file to operate on. " +
+            = "The script or project or solution file to operate on. " +
               "If a file is not specified, the command " +
               "will search the current directory for one.";
 

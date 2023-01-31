@@ -2,9 +2,9 @@
 {
     internal static class Program
     {
-        private static void Main(string[] rawArgs)
+        private static int Main(string[] args)
         {
-            Cli.Main(rawArgs);
+            return RunCli.Main(args);
         }
     }
 }

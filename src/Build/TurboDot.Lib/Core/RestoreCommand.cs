@@ -3,9 +3,10 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Linq;
 using System.Threading.Tasks;
-using ByteDev.DotNet.Project;
-using TurboDot.Impl;
 using TurboDot.Tools;
+using TurboMeta.API.Proj;
+using TurboMeta.API.Ref;
+using TurboRepo.Nuget;
 
 namespace TurboDot.Core
 {
@@ -18,16 +19,19 @@ namespace TurboDot.Core
 
         private static async Task Run(ParseResult result)
         {
-            var files = Cli.GetSlnOrProject(result);
+            var files = DotCli.GetSlnOrProject(result);
             if (files == null)
             {
-                Cli.ShowSlnOrProjectError();
+                DotCli.ShowSlnOrProjectError();
                 return;
             }
-            const string nugetDir = "nuget";
-            var g = new NuGet(nugetDir);
+
+            var g = new NuGet();
+
+            var loader = DotUtil.CreateLoader();
             var projects = files.SelectMany(f =>
-                Cli.ListProjects(Cli.ReadSlnOrProject(f)));
+                DotCli.ReadSlnOrProject(loader, f).ProjectsInOrder);
+
             await Restore(projects, g);
             LogSink.Write(" Done with restoring.");
         }
@@ -40,10 +44,10 @@ namespace TurboDot.Core
             await nuGet.Download(name, ver);
         }
 
-        public static async Task Restore(IEnumerable<ProjectHandle> projects, NuGet nuGet)
+        public static async Task Restore(IEnumerable<IProject> projects, NuGet nuGet)
         {
             var packages = projects
-                .SelectMany(p => p.Proj.PackageReferences)
+                .SelectMany(p => p.PackageReferences)
                 .GroupBy(p => $"{p.Name}|{p.Version}");
 
             var tasks = packages.Select(f => Task.Run(async () =>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Base\TurboBase.IO\TurboBase.IO.csproj" />
+    <ProjectReference Include="..\TurboRepo.API\TurboRepo.API.csproj" />
+  </ItemGroup>
+
+</Project>

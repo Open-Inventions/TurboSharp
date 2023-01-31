@@ -4,9 +4,9 @@ namespace TurboDot
 {
     internal static class Program
     {
-        private static async Task<int> Main(string[] rawArgs)
+        private static async Task<int> Main(string[] args)
         {
-            return await Cli.Main(rawArgs);
+            return await DotCli.Main(args);
         }
     }
 }

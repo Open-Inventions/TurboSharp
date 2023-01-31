@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Build\TurboCompile.API\TurboCompile.API.csproj" />
+    <ProjectReference Include="..\..\Core\TurboRepo.API\TurboRepo.API.csproj" />
   </ItemGroup>
 
 </Project>

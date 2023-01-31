@@ -2,8 +2,8 @@
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
-using TurboDot.Impl;
 using TurboDot.Tools;
+using TurboMeta.API.Proj;
 
 namespace TurboDot.Core
 {
@@ -16,16 +16,18 @@ namespace TurboDot.Core
 
         private static void Run(ParseResult result)
         {
-            var files = Cli.GetSlnOrProject(result);
+            var files = DotCli.GetSlnOrProject(result);
             if (files == null)
             {
-                Cli.ShowSlnOrProjectError();
+                DotCli.ShowSlnOrProjectError();
                 return;
             }
+
+            var loader = DotUtil.CreateLoader();
             foreach (var handle in files.SelectMany(f =>
-                         Cli.ListProjects(Cli.ReadSlnOrProject(f))))
+                         DotCli.ReadSlnOrProject(loader, f).ProjectsInOrder))
             {
-                var abs = handle.GetFile();
+                var abs = handle.FilePath;
                 LogSink.Write(@$" Cleaning project ""{abs}""...");
                 var dir = handle.GetFolder();
                 var bin = Directory.GetDirectories(dir, "bin")
