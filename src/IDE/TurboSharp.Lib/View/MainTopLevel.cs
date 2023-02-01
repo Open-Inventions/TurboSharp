@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Terminal.Gui;
 using TurboBase.IO;
 using TurboBase.UI;
+using TurboDot.Tools;
+using TurboMeta.API.File;
+using TurboMeta.API.Sol;
 using TurboSharp.Core;
 using TurboSpy;
 
@@ -14,7 +18,8 @@ namespace TurboSharp.View
 
         private const string EmptyFile = "Untitled";
         private readonly TextView _textView;
-        private string _currentFileName;
+        private readonly MultiFileLoader _loader;
+        private ISolution _currentSol;
 
         public MainTopLevel(Env boot)
         {
@@ -27,6 +32,7 @@ namespace TurboSharp.View
             Add(MenuBar);
             Add(textWin);
             Add(statusBar);
+            _loader = DotUtil.CreateLoader();
         }
 
         private static (Window, TextView, StatusBar) CreateTextView(string title,
@@ -147,18 +153,24 @@ namespace TurboSharp.View
             if (dialog.Canceled || dialog.FilePaths.Count <= 0)
                 return;
 
-            _currentFileName = dialog.FilePaths[0];
+            var single = dialog.FilePaths[0];
+            _currentSol = _loader.Load(single);
             LoadFile();
         }
 
+        private string CurrentFileName => _currentSol?
+            .ProjectsInOrder
+            .SelectMany(p => p.IncludedItems)
+            .FirstOrDefault();
+
         private void LoadFile()
         {
-            if (string.IsNullOrWhiteSpace(_currentFileName))
+            if (string.IsNullOrWhiteSpace(CurrentFileName))
                 return;
 
-            _textView.LoadFile(_currentFileName);
+            _textView.LoadFile(CurrentFileName);
             var window = (Window)_textView.SuperView.SuperView;
-            window.Title = _currentFileName;
+            window.Title = CurrentFileName;
         }
 
         private void DoNew()
@@ -208,12 +220,12 @@ namespace TurboSharp.View
 
         private bool CanCompile()
         {
-            return IoTools.IsValidFile(_currentFileName);
+            return IoTools.IsValidFile(CurrentFileName);
         }
 
         private void DoCompile()
         {
-            if (!IoTools.IsValidFile(_currentFileName))
+            if (!IoTools.IsValidFile(CurrentFileName))
                 return;
 
             CompileOrRun("Compiler", false);
@@ -221,12 +233,12 @@ namespace TurboSharp.View
 
         private bool CanRun()
         {
-            return IoTools.IsValidFile(_currentFileName);
+            return IoTools.IsValidFile(CurrentFileName);
         }
 
         private void DoRun()
         {
-            if (!IoTools.IsValidFile(_currentFileName))
+            if (!IoTools.IsValidFile(CurrentFileName))
                 return;
 
             CompileOrRun("Runner", true);
@@ -238,7 +250,7 @@ namespace TurboSharp.View
             Exception error = null;
             byte[] assembly = null;
             string json = null;
-            
+
             // TODO
             /* try
             {
