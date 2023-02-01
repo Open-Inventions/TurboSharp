@@ -16,10 +16,12 @@ namespace TurboSpy
             };
 
             Application.Init();
-            Application.Run(new MainTopLevel(boot));
+            Application.Run(CreateTop(boot));
             Application.Shutdown();
 
             return 0;
         }
+
+        public static Toplevel CreateTop(Env boot) => new MainTopLevel(boot);
     }
 }

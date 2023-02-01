@@ -9,6 +9,7 @@
     <ProjectReference Include="..\..\Base\TurboBase.IO\TurboBase.IO.csproj" />
     <ProjectReference Include="..\..\Base\TurboBase.UI\TurboBase.UI.csproj" />
     <ProjectReference Include="..\..\Run\TurboRun.Lib\TurboRun.Lib.csproj" />
+    <ProjectReference Include="..\..\Spy\TurboSpy.Lib\TurboSpy.Lib.csproj" />
   </ItemGroup>
 
 </Project>

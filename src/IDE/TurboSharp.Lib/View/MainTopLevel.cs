@@ -4,6 +4,7 @@ using System.Text;
 using Terminal.Gui;
 using TurboBase.IO;
 using TurboBase.UI;
+using TurboSpy;
 
 namespace TurboSharp.View
 {
@@ -111,8 +112,8 @@ namespace TurboSharp.View
 
         private void DoSpy()
         {
-            // TODO var spy = new TurboSpy.MainTopLevel(_boot);
-            // TODO Application.Run(spy);
+            var spy = SpyCli.CreateTop(_boot);
+            Application.Run(spy);
         }
 
         private bool CanSaveAll()
