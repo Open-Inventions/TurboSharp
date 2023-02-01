@@ -6,7 +6,9 @@ namespace TurboMeta.CSharp
 {
     public sealed class CSProjectLoader : ProjectLoader
     {
-        public override string Extension => ".csproj";
+        public const string PrjExt = ".csproj";
+
+        public override string Extension => PrjExt;
 
         protected override string CodeExtension => CSScriptLoader.CodeExt;
     }

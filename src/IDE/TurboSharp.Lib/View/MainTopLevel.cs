@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Terminal.Gui;
 using TurboBase.IO;
 using TurboBase.UI;
+using TurboSharp.Core;
 using TurboSpy;
 
 namespace TurboSharp.View
@@ -136,8 +136,9 @@ namespace TurboSharp.View
             if (!CanBeClosed())
                 return;
 
-            var allowed = new List<string> { ".cs" };
-            var dialog = new OpenDialog("Open", "Choose a single file or more.", allowed)
+            var allowed = Defaults.GetAllowedExtensions();
+            const string message = "Choose a single file or more.";
+            var dialog = new OpenDialog("Open", message, allowed)
             {
                 AllowsMultipleSelection = false
             };

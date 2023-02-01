@@ -6,7 +6,9 @@ namespace TurboMeta.VBasic
 {
     public sealed class VBProjectLoader : ProjectLoader
     {
-        public override string Extension => ".vbproj";
+        public const string PrjExt = ".vbproj";
+
+        public override string Extension => PrjExt;
 
         protected override string CodeExtension => VBScriptLoader.CodeExt;
     }
